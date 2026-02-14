@@ -40,8 +40,8 @@ deploy:
         echo '<p>Commit: '$GITHUB_SHA'</p>' >> public/index.html 
         echo '</body></html>' >> public/index.html 
     - name: Deploy to GitHub Pages 
-        uses: peaceiris/actions-gh-pages@v3 
-        with: 
-          github_token: ${{ secrets.GITHUB_TOKEN }} 
-          publish_dir: ./public
+      uses: peaceiris/actions-gh-pages@v3 
+      with: 
+        github_token: ${{ secrets.GITHUB_TOKEN }} 
+        publish_dir: ./public
 

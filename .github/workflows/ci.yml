@@ -22,26 +22,25 @@ jobs:
       - name: Upload coverage 
         uses: codecov/codecov-action@v3 
         if: always() 
-
-deploy: 
-  needs: test 
-  runs-on: ubuntu-latest 
-  if: github.ref == 'refs/heads/main' 
-  permissions:
-    contents: write
-  steps: 
-    - uses: actions/checkout@v4 
-    - name: Create status page 
-      run: | 
-        mkdir -p public 
-        echo '<html><body>' > public/index.html 
-        echo '<h1>Deploy Status</h1>' >> public/index.html 
-        echo '<p>Last deploy: '$(date)'</p>' >> public/index.html 
-        echo '<p>Commit: '$GITHUB_SHA'</p>' >> public/index.html 
-        echo '</body></html>' >> public/index.html 
-    - name: Deploy to GitHub Pages 
-      uses: peaceiris/actions-gh-pages@v3 
-      with: 
-        github_token: ${{ secrets.GITHUB_TOKEN }} 
-        publish_dir: ./public
+  deploy: 
+    needs: test 
+    runs-on: ubuntu-latest 
+    if: github.ref == 'refs/heads/main' 
+    permissions:
+      contents: write
+    steps: 
+      - uses: actions/checkout@v4 
+      - name: Create status page 
+        run: | 
+          mkdir -p public 
+          echo '<html><body>' > public/index.html 
+          echo '<h1>Deploy Status</h1>' >> public/index.html 
+          echo '<p>Last deploy: '$(date)'</p>' >> public/index.html 
+          echo '<p>Commit: '$GITHUB_SHA'</p>' >> public/index.html 
+          echo '</body></html>' >> public/index.html 
+      - name: Deploy to GitHub Pages 
+        uses: peaceiris/actions-gh-pages@v3 
+        with: 
+          github_token: ${{ secrets.GITHUB_TOKEN }} 
+          publish_dir: ./public
 

@@ -1,0 +1,30 @@
+{
+  "name": "pipeline_cicd",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": { 
+    "start": "node src/app.js", 
+    "test": "jest --coverage", 
+    "test:watch": "jest --watch" 
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Angomezp/Pipeline_CICD.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Angomezp/Pipeline_CICD/issues"
+  },
+  "homepage": "https://github.com/Angomezp/Pipeline_CICD#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "jest": "^30.2.0",
+    "supertest": "^7.2.2"
+  }
+}

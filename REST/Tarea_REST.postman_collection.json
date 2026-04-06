@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "50bcc4eb-6f5a-4c48-ad7a-c98979fedc87",
+    "name": "Tarea_REST",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52697602",
+    "_collection_link": "https://go.postman.co/collection/52697602-50bcc4eb-6f5a-4c48-ad7a-c98979fedc87?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "CoinGecko",
+      "item": [
+        {
+          "name": "Obtener_recursos",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Http code to be 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"No empty response\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "    pm.expect(json).to.not.be.empty;\r",
+                  "})\r",
+                  "\r",
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_Base_CoinGecko}}/coins/list",
+              "host": [
+                "{{URL_Base_CoinGecko}}"
+              ],
+              "path": [
+                "coins",
+                "list"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener_una_moneda",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Http code to be 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"No empty response\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "    pm.expect(json).to.not.be.empty;\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Response should contain id = 'zynexa'\", function () {\r",
+                  "    const json = pm.response.json();\r",
+                  "    pm.expect(json.id).to.eql(\"zynexa\");\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_Base_CoinGecko}}/coins/zynexa",
+              "host": [
+                "{{URL_Base_CoinGecko}}"
+              ],
+              "path": [
+                "coins",
+                "zynexa"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Query_Params",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "\r",
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Http code to be 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"No empty response\", function () {\r",
+                  "    pm.expect(json).to.not.be.empty;\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Response should contain 'zynexa'.\", function () {\r",
+                  "    pm.expect(json).to.have.property('zynexa');\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Response should contain inside 'zynexa', the usd value\", function() {\r",
+                  "    pm.expect(json.zynexa).to.have.property('usd');\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_Base_CoinGecko}}/simple/price?vs_currencies=usd&ids=zynexa",
+              "host": [
+                "{{URL_Base_CoinGecko}}"
+              ],
+              "path": [
+                "simple",
+                "price"
+              ],
+              "query": [
+                {
+                  "key": "vs_currencies",
+                  "value": "usd",
+                  "description": "En que moneda quiero ver el valor."
+                },
+                {
+                  "key": "ids",
+                  "value": "zynexa",
+                  "description": "Moneda a la cual se le observa el valor."
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Nasa",
+      "item": [
+        {
+          "name": "Token-Demo_key",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const json = pm.response.json();\r",
+                  "\r",
+                  "pm.test(\"Http code to be 200\", function() {\r",
+                  "    pm.response.to.have.status(200);\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"No empty response\", function () {\r",
+                  "    pm.expect(json).to.not.be.empty;\r",
+                  "})\r",
+                  "\r",
+                  "pm.test(\"Date is correct\", function () {\r",
+                  "    const dateParam = pm.request.url.query.get(\"date\");\r",
+                  "    pm.expect(json.date).to.equal(dateParam);\r",
+                  "})"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_Base_Nasa_Apod}}?api_key=DEMO_KEY&date=2014-11-03",
+              "host": [
+                "{{URL_Base_Nasa_Apod}}"
+              ],
+              "query": [
+                {
+                  "key": "api_key",
+                  "value": "DEMO_KEY",
+                  "type": "text"
+                },
+                {
+                  "key": "date",
+                  "value": "2014-11-03",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Token-User_key",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{URL_Base_Nasa_Apod}}?api_key={{vault:Nasa_API_KEY}}&date=2026-04-05",
+              "host": [
+                "{{URL_Base_Nasa_Apod}}"
+              ],
+              "query": [
+                {
+                  "key": "api_key",
+                  "value": "{{vault:Nasa_API_KEY}}"
+                },
+                {
+                  "key": "date",
+                  "value": "2026-04-05"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

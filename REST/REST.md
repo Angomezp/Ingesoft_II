@@ -34,9 +34,10 @@ Principalmente los códigos de respuesta fueron 200 (Successful) cuando la reque
 | **4** | Buscar imagen del día, sin token personal. | ![Request-4_Response](images/R4_Response.png) | ![Request-4_Test](images/R4_Test.png) |
 | **5** | Buscar imagen del día, con token personal. | ![Request-5_Response](images/R5_Response.png) | ![Request-5_Test](images/R5_Test.png) |
 
+### Nota: 
+En caso de que las imágenes se vean muy pequeñas, estas se encuentran en la carpeta `/images` donde su nombre es ``R{i}_Test`` o  ``R{i}_Response``, que significa que es la captura del request i, la parte del test o de response.
+
 ## ¿Qué aprendiste diferente a JSONPlaceholder?
 
 Principalmente el uso de los query parameters, los cuales sirven específicamente para hacer una búsqueda más precisa o modificar el tipo de información que se te responde al request. Además de eso, el uso de tokens y cómo guardarlos en un espacio seguro en Postman, para su uso controlado y para que, por ejemplo, no todo el equipo que tenga acceso a esos request pueda usar mi token personal.
 
-# Nota: 
-En caso de que las imágenes se vean muy pequeñas, estas se encuentran en la carpeta `/images` donde su nombre es ``R{i}_Test`` o  ``R{i}_Response``, que significa que es la captura del request i, la parte del test o de response.

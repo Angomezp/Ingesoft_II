@@ -1,4 +1,4 @@
-﻿# Curso: Ingenieria de Software II
+﻿# Curso: Ingeniería de Software II
 
 # Estudiante:  Ángel David Gómez Pastrana
 
@@ -11,7 +11,7 @@
 - ``/GraphQL:``
   - ``/GraphQL.md:`` Documento del laboratorio GraphQL: uso de la API Countries (Trevor Blades), descripción de 5 requests de Postman, resultados y comparativa con REST.
   - ``/Env_GraphQL_Tarea.postman_environment.json:`` Archivo de entorno de Postman para GraphQL (variables usadas en las requests).
-  - - ``/Tarea GraphQL - Angel Gomez.postman_collection.json:`` Colección de Postman con los requests GraphQL y tests automatizados.
+  - ``/Tarea GraphQL - Angel Gomez.postman_collection.json:`` Colección de Postman con los requests GraphQL y tests automatizados.
   - ``/images/:`` Capturas `R{i}_Test` y `R{i}_Response` con respuestas y resultados de tests para las queries de GraphQL.
 
 - ``/REST:``

@@ -1,0 +1,200 @@
+Query 1:
+Body: 
+query Countries {
+    countries {
+        name
+        code
+    }
+}
+
+Test After Response:
+
+const jsonData = pm.response.data;
+
+pm.test("Status code is 200", function () {
+    pm.expect(pm.response.code).to.eql(200);
+});
+
+pm.test("Response has 'countries' property", function () {
+    pm.expect(jsonData).to.have.property("countries");
+});
+
+pm.test("'countries' is a non-empty array", function () {
+    pm.expect(jsonData.countries).to.be.an("array");
+    pm.expect(jsonData.countries.length).to.be.above(0);
+});
+
+pm.test("First country has 'name' and 'code'", function () {
+    const country = jsonData.countries[0];
+    pm.expect(country).to.have.property("name");
+    pm.expect(country).to.have.property("code");
+});
+
+
+Query 2: 
+Body: 
+query Country ($code: ID!) {
+    country(code: $code) {
+        capital
+        code
+        currency
+        name
+    }
+}
+
+Variables: 
+{"code" : "CO" }
+
+Test After Response:
+
+const jsonData = pm.response.data;
+
+pm.test("Status code is 200", function () {
+    pm.expect(pm.response.code).to.eql(200);
+});
+
+pm.test("Response has 'country' property", function () {
+    pm.expect(jsonData).to.have.property("country");
+});
+
+pm.test("Response code to be equal to the one being searched.",function (){
+    pm.expect(jsonData.country.code).to.eql("CO");
+})
+
+pm.test("Country has capital and currency", function () {
+    pm.expect(jsonData.country.capital).to.exist;
+    pm.expect(jsonData.country.currency).to.exist;
+});
+
+Query 3: 
+Body: 
+query Continent {
+    continent(code: "SA") {
+        code
+        countries {
+            capital
+            code
+            name
+        }
+    }
+}
+
+Test After Response:
+
+const jsonData = pm.response.data;
+
+pm.test("Status code is 200", function () {
+    pm.expect(pm.response.code).to.eql(200);
+});
+
+pm.test("Response has 'continent' property", function () {
+    pm.expect(jsonData).to.have.property("continent");
+});
+
+pm.test("Continent has a non-empty countries array", function () {
+    pm.expect(jsonData.continent.countries).to.be.an("array");
+    pm.expect(jsonData.continent.countries.length).to.be.above(0);
+});
+
+pm.test("First country has 'name'", function () {
+    const country = jsonData.continent.countries[0];
+    pm.expect(country).to.have.property("name");
+});
+
+Query 4:
+Body:
+query Countries {
+    countries {
+        capital
+        code
+        currencies
+        name
+        native
+        languages {
+            code
+            name
+        }
+    }
+}
+
+Test After Response:
+
+const jsonData = pm.response.data;
+pm.test("Status code is 200", function () {
+    pm.expect(pm.response.code).to.eql(200);
+});
+pm.test("Response has 'countries' property", function () {
+    pm.expect(jsonData).to.have.property("countries");
+});
+pm.test("'countries' is a non-empty array", function () {
+    pm.expect(jsonData.countries).to.be.an("array");
+    pm.expect(jsonData.countries.length).to.be.above(0);
+});
+pm.test("Languages is a non-empty array", function () {
+    const languages = jsonData.countries[0].languages;
+    pm.expect(languages).to.be.an("array");
+});
+pm.test("Language has 'name'", function () {
+    const languages = jsonData.countries[0].languages;
+    if (languages.length > 0) {
+        pm.expect(languages[0]).to.have.property("name");
+    }
+});
+
+Query 5:
+Body:
+query Languages {
+    continent(code: "SA") {
+        code
+        name
+        countries {
+            code
+            name
+            languages {
+                code
+                name
+            }
+        }
+    }
+}
+
+Test After Response:
+
+const jsonData = pm.response.data;
+
+pm.test("Status code is 200", function () {
+    pm.expect(pm.response.code).to.eql(200);                
+});
+
+pm.test("Response has 'continent' property", function () {
+    pm.expect(jsonData).to.have.property("continent");      
+});
+
+pm.test("Continent has correct code", function () {
+    pm.expect(jsonData.continent.code).to.eql("SA");        
+});
+
+pm.test("Continent has non-empty countries array", function () {
+    pm.expect(jsonData.continent.countries).to.be.an("array");
+    pm.expect(jsonData.continent.countries.length).to.be.above(0);       
+});
+
+pm.test("First country has code and name", function () {
+    const country = jsonData.continent.countries[0];
+    pm.expect(country).to.have.property("code");
+    pm.expect(country).to.have.property("name");                         
+});
+
+pm.test("Country has languages array", function () {
+    const country = jsonData.continent.countries[0];
+    pm.expect(country.languages).to.be.an("array");                      
+});
+
+pm.test("Language has code and name", function () {
+    const countries = jsonData.continent.countries;
+    if (countries.length > 0 && countries[0].languages.length > 0) {
+        const language = countries[0].languages[0];
+        pm.expect(language).to.have.property("code");
+        pm.expect(language).to.have.property("name");
+    }                                                                   
+ });

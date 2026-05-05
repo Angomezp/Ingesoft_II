@@ -1,11 +1,8 @@
-﻿# Curso: Ingenieria de Software II
+﻿# Curso: Ingeniería de Software II
+# - Laboratorio REST por consola y SSH
 
-# Estudiante:  Ángel David Gómez Pastrana
+### Estudiante:  Ángel David Gómez Pastrana
+## Descripción del trabajo 
 
+Primero completamos los to-do en el archivo de `servidor.js`, los cuales quedaron asi: 
 
-## Ubicación de las asignaciones por rama
-- En la rama `HW-Principios_Solid` se encuentra la asignación sobre los principios Solid junto al resumen del video a visualizar.
-
-- En la rama `HW-Pipeline_CICD` se encuentra la asignación sobre la creacion de un Pipeline sencillo para el despliegue de una pagina en Github Pages con una API en Express.
-
-- En la rama `HW-Postman` se encuentra la asignación sobre el laboratorio de REST y GraphQL con Postman.

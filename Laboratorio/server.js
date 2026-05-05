@@ -165,9 +165,11 @@ const server = http.createServer(async (req, res) => {
 
     // TODO 1: Buscar la tarea por id en db.tasks
     const idx = db.tasks.findIndex(t => t.id === id);
+
     // TODO 2: Si no existe, retornar 404
     if (idx === -1)
       return send(res, 404, { error: 'Tarea no encontrada' });
+
     // TODO 3: Verificar que task.userId === usuario.userId, si no retornar 403
     if (db.tasks[idx].userId !== usuario.userId)
       return send(res, 403, { error: 'No tienes permiso para modificar esta tarea' });
@@ -179,7 +181,6 @@ const server = http.createServer(async (req, res) => {
     if (status) db.tasks[idx].status = status;
 
     // TODO 5: Retornar la tarea actualizada con status 200
-
     return send(res, 200, db.tasks[idx]);
   }
 
@@ -193,29 +194,38 @@ const server = http.createServer(async (req, res) => {
 
     // TODO 1: Buscar la tarea por id en db.tasks
     const idx = db.tasks.findIndex(t => t.id === id);
+
     // TODO 2: Si no existe, retornar 404
     if (idx === -1)
       return send(res, 404, { error: 'Tarea no encontrada' });
+
     // TODO 3: Verificar que task.userId === usuario.userId, si no retornar 403
     if (db.tasks[idx].userId !== usuario.userId)
       return send(res, 403, { error: 'No tienes permiso para eliminar esta tarea' });
+
     // TODO 4: Eliminar la tarea del arreglo db.tasks
     db.tasks.splice(idx, 1);
-    // TODO 5: Retornar status 204 sin body (res.writeHead(204); res.end();)
 
+    // TODO 5: Retornar status 204 sin body (res.writeHead(204); res.end();)
     return send(res, 204, {});
   }
 
   send(res, 404, { error: 'Ruta no encontrada' });
 });
 
-server.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
+
+
+const TU_IP = "192.168.78.229"  // cambiar por la IP local de tu máquina (ej: "192.168.1.100")
+
+server.listen(3000,'0.0.0.0' ,() => {
+  console.log('Servidor corriendo en:');
+  console.log('  Local:   http://localhost:3000');
+  console.log('  Red:     http://' + TU_IP + ':3000');
   console.log('Endpoints disponibles:');
   console.log('  POST /auth/register');
   console.log('  POST /auth/login');
   console.log('  GET  /tasks          (requiere token)');
   console.log('  POST /tasks          (requiere token)');
-  console.log('  PUT  /tasks/:id      (TODO - completar)');
-  console.log('  DELETE /tasks/:id    (TODO - completar)');
+  console.log('  PUT  /tasks/:id      (requiere token)');
+  console.log('  DELETE /tasks/:id    (requiere token)');
 });

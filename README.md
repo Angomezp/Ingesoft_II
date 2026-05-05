@@ -9,3 +9,5 @@
 - En la rama `HW-Pipeline_CICD` se encuentra la asignación sobre la creacion de un Pipeline sencillo para el despliegue de una pagina en Github Pages con una API en Express.
 
 - En la rama `HW-Postman` se encuentra la asignación sobre el laboratorio de REST y GraphQL con Postman.
+
+- En la rama `HW-Laboratorio_SSH` se encuentra la asignación sobre el laboratorio de comandos REST por consola y uso de SSH.

@@ -1,15 +1,13 @@
 ﻿# Curso: Ingeniería de Software II
 
-# Estudiante:  Ángel David Gómez Pastrana
+# Estudiante: Ángel David Gómez Pastrana
 
+# Laboratorio Patrones de Diseño
 
-## Ubicación de las asignaciones por rama
-- En la rama `HW-Principios_Solid` se encuentra la asignación sobre los principios Solid junto al resumen del video a visualizar.
+# Descripción de la rama
+Esta rama contiene ejemplos de código en Java que ilustran algunos Patrones de Diseño, en la carpeta `Patrones`. Cada archivo presenta un patrón o combinación de ellos:
 
-- En la rama `HW-Pipeline_CICD` se encuentra la asignación sobre la creación de un Pipeline sencillo para el despliegue de una página en GitHub Pages con una API en Express.
-
-- En la rama `HW-Postman` se encuentra la asignación sobre el laboratorio de REST y GraphQL con Postman.
-
-- En la rama `HW-Laboratorio_SSH` se encuentra la asignación sobre el laboratorio de comandos REST por consola y uso de SSH.
-
-- En la rama `HW-Patrones_de_Diseno` se encuentra la asignación sobre el uso e implementación de distintos Patrones de Diseño
+- `Singleton.java` — Patrón Creacional Singleton.
+- `Factory.java` — Patrón Creacional Factory.
+- `PrototypeFacade.java` — Patrón Creacional Prototype + Patrón Estructural Facade
+- `BuilderAdapterState.java` — Patrón Creacional Builder + Patrón Estructural Adapter + Patrón Comportamental State. 

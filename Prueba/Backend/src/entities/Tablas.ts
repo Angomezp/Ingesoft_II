@@ -1,0 +1,1 @@
+// Por definir ya que endpoint login no devuelve jwt para acceder a tablas api.

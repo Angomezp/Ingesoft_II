@@ -1,24 +1,18 @@
 import { Client } from 'pg';
-import * as dotenv from 'dotenv';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
+import { env } from './../config/env.ts';
 
-const __dirname = path.dirname(__filename);
-
-
-dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const createDatabase = async () => {
-	const dbName = process.env.DB_NAME as string;
+	const dbName = env.DB_NAME;
 
 	const adminClient = new Client({
-		user: process.env.DB_USER,
-		host: process.env.DB_HOST,
-		password: process.env.DB_PASSWORD,
-		port: Number(process.env.DB_PORT)
+		user: env.DB_USERNAME,
+		host: env.DB_HOST,
+		password: env.DB_PASSWORD,
+		port: Number(env.DB_PORT)
 	});
 
 	try {
@@ -42,10 +36,10 @@ const createDatabase = async () => {
 
 
 		const dbClient = new Client({
-			user: process.env.DB_USER,
-			host: process.env.DB_HOST,
-			password: process.env.DB_PASSWORD,
-			port: Number(process.env.DB_PORT),
+			user: env.DB_USERNAME,
+			host: env.DB_HOST,
+			password: env.DB_PASSWORD,
+			port: Number(env.DB_PORT),
 			database: dbName
 		});
 		await dbClient.connect();

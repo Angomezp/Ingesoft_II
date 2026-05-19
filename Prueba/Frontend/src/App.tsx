@@ -1,121 +1,175 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { type FormEvent, useState } from 'react'
 import './App.css'
 
+type Screen = 'login' | 'home' | 'tablas' | 'localidades'
+
+type UserProfile = {
+  nombre: string
+  identificacion: string
+  usuario: string
+}
+
+const MOCK_USER = {
+  usuario: 'admin',
+  password: '1234',
+  nombre: 'Angel Perez',
+  identificacion: '1020304050',
+}
+
 function App() {
-  const [count, setCount] = useState(0)
+  const [screen, setScreen] = useState<Screen>('login')
+  const [userInput, setUserInput] = useState('')
+  const [passwordInput, setPasswordInput] = useState('')
+  const [error, setError] = useState('')
+  const [currentUser, setCurrentUser] = useState<UserProfile | null>(null)
+
+  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
+    const okUser = userInput.trim() === MOCK_USER.usuario
+    const okPass = passwordInput === MOCK_USER.password
+
+    if (!okUser || !okPass) {
+      setError('Usuario o contrasena incorrectos')
+      return
+    }
+
+    setCurrentUser({
+      nombre: MOCK_USER.nombre,
+      identificacion: MOCK_USER.identificacion,
+      usuario: MOCK_USER.usuario,
+    })
+    setError('')
+    setScreen('home')
+  }
+
+  const handleLogout = () => {
+    setCurrentUser(null)
+    setUserInput('')
+    setPasswordInput('')
+    setError('')
+    setScreen('login')
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <main className="app">
+      {screen === 'login' && (
+        <section className="card">
+          <h1>Iniciar sesion</h1>
+          <p>Ingresa usuario y contrasena</p>
 
-      <div className="ticks"></div>
+          <form onSubmit={handleLogin} className="form">
+            <label htmlFor="usuario">Usuario</label>
+            <input
+              id="usuario"
+              type="text"
+              value={userInput}
+              onChange={(e) => setUserInput(e.target.value)}
+              placeholder="admin"
+              autoComplete="username"
+              required
+            />
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+            <label htmlFor="password">Contrasena</label>
+            <input
+              id="password"
+              type="password"
+              value={passwordInput}
+              onChange={(e) => setPasswordInput(e.target.value)}
+              placeholder="1234"
+              autoComplete="current-password"
+              required
+            />
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+            {error && <p className="error">{error}</p>}
+
+            <button type="submit" className="primary">
+              Entrar
+            </button>
+          </form>
+
+          <small className="hint">Demo: admin / 1234</small>
+        </section>
+      )}
+
+      {screen !== 'login' && currentUser && (
+        <section className="card">
+          <header className="topbar">
+            <strong>Panel</strong>
+            <button type="button" className="ghost" onClick={handleLogout}>
+              Cerrar sesion
+            </button>
+          </header>
+
+          {screen === 'home' && (
+            <>
+              <h1>Home</h1>
+
+              <div className="profile">
+                <p>
+                  <span>Nombre:</span> {currentUser.nombre}
+                </p>
+                <p>
+                  <span>Identificacion:</span> {currentUser.identificacion}
+                </p>
+                <p>
+                  <span>Usuario:</span> {currentUser.usuario}
+                </p>
+              </div>
+
+              <div className="actions">
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={() => setScreen('tablas')}
+                >
+                  Ir a Tablas
+                </button>
+                <button
+                  type="button"
+                  className="primary"
+                  onClick={() => setScreen('localidades')}
+                >
+                  Ir a Localidades
+                </button>
+              </div>
+            </>
+          )}
+
+          {screen === 'tablas' && (
+            <>
+              <h1>Tablas</h1>
+              <p className="screen-text">
+                Aqui puedes agregar tu contenido de tablas.
+              </p>
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => setScreen('home')}
+              >
+                Volver a Home
+              </button>
+            </>
+          )}
+
+          {screen === 'localidades' && (
+            <>
+              <h1>Localidades</h1>
+              <p className="screen-text">
+                Aqui puedes agregar tu contenido de localidades.
+              </p>
+              <button
+                type="button"
+                className="ghost"
+                onClick={() => setScreen('home')}
+              >
+                Volver a Home
+              </button>
+            </>
+          )}
+        </section>
+      )}
+    </main>
   )
 }
 

@@ -2,9 +2,11 @@
   "name": "database",
   "version": "1.0.0",
   "description": "",
-  "main": "create-db.ts",
+  "main": "",
   "scripts": {
-    "create-db": "npx tsx create-db.ts",
+    "create-db": "npx tsx ./src/scripts/create-db.ts",
+    "reset-db": "npx tsx ./src/scripts/reset-db.ts",
+    "delete-db": "npx tsx ./src/scripts/delete-db.ts",
     "prepare": "husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",

@@ -9,7 +9,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
+dotenv.config({ path: path.resolve(__dirname, '../../../.env') });
 
 const createDatabase = async () => {
 	const dbName = process.env.DB_NAME as string;
@@ -50,11 +50,22 @@ const createDatabase = async () => {
 		});
 		await dbClient.connect();
 
-		// init.sql está en db_schema/ dentro de Database/
-		const sqlScriptPath = path.join(__dirname, './src/db_schema/init.sql');
-		const sqlScriptContent = readFileSync(sqlScriptPath, 'utf8');
+
+		const sqlScriptPathUsuarios = path.join(__dirname, './../schemas/Usuarios.sql');
+		const sqlScriptContent = readFileSync(sqlScriptPathUsuarios, 'utf8');
 
 		await dbClient.query(sqlScriptContent);
+
+		const sqlScriptPathLocalidades = path.join(__dirname, './../schemas/Localidades.sql');
+		const sqlScriptContentLocalidades = readFileSync(sqlScriptPathLocalidades, 'utf8');
+
+		await dbClient.query(sqlScriptContentLocalidades);
+
+		const sqlScriptPathTablasApi = path.join(__dirname, './../schemas/TablasApi.sql');
+		const sqlScriptContentTablasApi = readFileSync(sqlScriptPathTablasApi, 'utf8');
+
+		await dbClient.query(sqlScriptContentTablasApi);
+
 		console.log('Tablas creadas/existentes aplicadas correctamente');
 
 		await dbClient.end();
@@ -64,4 +75,4 @@ const createDatabase = async () => {
 	}
 };
 
-createDatabase();
+await createDatabase();

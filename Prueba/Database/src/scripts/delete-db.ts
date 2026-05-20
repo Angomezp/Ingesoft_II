@@ -1,12 +1,16 @@
 import { Client } from 'pg';
 import { env } from './../config/env.ts';
+import { fileURLToPath } from 'url';
+import path from 'path';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const deleteDatabase = async () => {
 	const dbName = env.DB_NAME;
 
 	const adminClient = new Client({
-		user: env.DB_USERNAME,
+		user: env.DB_USER,
 		host: env.DB_HOST,
 		password: env.DB_PASSWORD,
 		port: Number(env.DB_PORT),

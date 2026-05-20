@@ -3,13 +3,16 @@ import { readFileSync } from 'fs';
 import path from 'path';
 
 import { env } from './../config/env.ts';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const createDatabase = async () => {
 	const dbName = env.DB_NAME;
 
 	const adminClient = new Client({
-		user: env.DB_USERNAME,
+		user: env.DB_USER,
 		host: env.DB_HOST,
 		password: env.DB_PASSWORD,
 		port: Number(env.DB_PORT)
@@ -36,7 +39,7 @@ const createDatabase = async () => {
 
 
 		const dbClient = new Client({
-			user: env.DB_USERNAME,
+			user: env.DB_USER,
 			host: env.DB_HOST,
 			password: env.DB_PASSWORD,
 			port: Number(env.DB_PORT),

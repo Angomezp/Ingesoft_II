@@ -3,6 +3,19 @@
   display: grid;
   place-items: center;
   padding: 24px;
+  gap: 16px;
+}
+
+.version-banner {
+  width: 100%;
+  max-width: 520px;
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 14px;
+  font-weight: 600;
+  color: var(--text-h);
+  box-shadow: var(--shadow);
 }
 
 .card {

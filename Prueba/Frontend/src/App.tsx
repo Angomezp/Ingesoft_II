@@ -1,19 +1,20 @@
-import { type FormEvent, useState } from 'react'
+import { useEffect, type FormEvent, useState } from 'react'
 import './App.css'
 
 type Screen = 'login' | 'home' | 'tablas' | 'localidades'
+
+type VersionResponse = {
+  endpointVersion: string
+  localVersionConfigured: boolean
+  comparison?: 'equal' | 'higher' | 'lower'
+  message?: string
+  error?: string
+}
 
 type UserProfile = {
   nombre: string
   identificacion: string
   usuario: string
-}
-
-const MOCK_USER = {
-  usuario: 'admin',
-  password: '1234',
-  nombre: 'Angel Perez',
-  identificacion: '1020304050',
 }
 
 function App() {
@@ -22,25 +23,130 @@ function App() {
   const [passwordInput, setPasswordInput] = useState('')
   const [error, setError] = useState('')
   const [currentUser, setCurrentUser] = useState<UserProfile | null>(null)
+  const [token, setToken] = useState<string | null>(null)
+  const [versionMessage, setVersionMessage] = useState('')
+  const [localidades, setLocalidades] = useState<Array<any>>([])
+  const [localidadesError, setLocalidadesError] = useState('')
+  const [loadingLocalidades, setLoadingLocalidades] = useState(false)
 
-  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+  useEffect(() => {
+    let isMounted = true
 
-    const okUser = userInput.trim() === MOCK_USER.usuario
-    const okPass = passwordInput === MOCK_USER.password
+    const loadVersion = async () => {
+      try {
+        const response = await fetch('/version')
+        const data = (await response.json()) as VersionResponse
 
-    if (!okUser || !okPass) {
-      setError('Usuario o contrasena incorrectos')
-      return
+        if (!response.ok) {
+          throw new Error(data.error ?? 'No se pudo consultar la versión')
+        }
+
+        if (!isMounted) {
+          return
+        }
+
+        if (!data.localVersionConfigured) {
+          localStorage.setItem('app.version', data.endpointVersion)
+          setVersionMessage('')
+          return
+        }
+
+        setVersionMessage(data.message ?? '')
+      } catch {
+        if (isMounted) {
+          setVersionMessage('No se pudo consultar la versión')
+        }
+      }
     }
 
-    setCurrentUser({
-      nombre: MOCK_USER.nombre,
-      identificacion: MOCK_USER.identificacion,
-      usuario: MOCK_USER.usuario,
-    })
+    loadVersion()
+
+    return () => {
+      isMounted = false
+    }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    const loadLocalidades = async () => {
+      if (screen !== 'localidades') return
+      setLoadingLocalidades(true)
+      setLocalidadesError('')
+      try {
+        const resp = await fetch('/localidades')
+        if (!resp.ok) {
+          const txt = await resp.text().catch(() => '')
+          throw new Error(txt || `Status ${resp.status}`)
+        }
+        const data = await resp.json()
+        // normalize: if response is object with array inside, try to find array
+        let items: any[] = []
+        if (Array.isArray(data)) items = data
+        else if (Array.isArray(data?.data)) items = data.data
+        else if (Array.isArray(data?.result)) items = data.result
+        else if (data && typeof data === 'object') {
+          // try to find first array property
+          const arr = Object.values(data).find((v) => Array.isArray(v)) as any
+          if (Array.isArray(arr)) items = arr
+        }
+
+        if (!isMounted) return
+        setLocalidades(items)
+      } catch (err: any) {
+        if (!isMounted) return
+        setLocalidadesError(String(err?.message ?? err))
+      } finally {
+        if (isMounted) setLoadingLocalidades(false)
+      }
+    }
+
+    loadLocalidades()
+
+    return () => {
+      isMounted = false
+    }
+  }, [screen])
+
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+
     setError('')
-    setScreen('home')
+
+    try {
+      const resp = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: userInput.trim(), password: passwordInput }),
+      })
+
+      const data = await resp.json()
+
+      if (!resp.ok) {
+        setError(data?.message ?? 'No se pudo iniciar sesion')
+        return
+      }
+
+      // expected: { ok: true, user: { NombreUsuario, Identificacion, NombreCompleto, TokenJWT? }, TokenJWT? }
+      const user = data.user
+      if (!user) {
+        setError('Respuesta invalida del servidor')
+        return
+      }
+
+      // token may be on root or inside user; normalize
+      const tokenFromResp = data?.TokenJWT ?? user?.TokenJWT ?? data?.token ?? null
+      setToken(tokenFromResp ?? null)
+
+      setCurrentUser({
+        nombre: user.NombreCompleto ?? user.NombreUsuario,
+        identificacion: user.Identificacion ?? '',
+        usuario: user.NombreUsuario,
+      })
+      setScreen('home')
+    } catch ( err ) {
+      console.error('Login error:', err)
+      setError('Error de conexion con el servidor')
+    }
   }
 
   const handleLogout = () => {
@@ -53,6 +159,8 @@ function App() {
 
   return (
     <main className="app">
+      {versionMessage && <div className="version-banner">{versionMessage}</div>}
+
       {screen === 'login' && (
         <section className="card">
           <h1>Iniciar sesion</h1>
@@ -87,8 +195,6 @@ function App() {
               Entrar
             </button>
           </form>
-
-          <small className="hint">Demo: admin / 1234</small>
         </section>
       )}
 
@@ -139,9 +245,13 @@ function App() {
           {screen === 'tablas' && (
             <>
               <h1>Tablas</h1>
-              <p className="screen-text">
-                Aqui puedes agregar tu contenido de tablas.
-              </p>
+              {!token ? (
+                <p className="screen-text error">
+                  No hay jwt en el login, por lo tanto no se puede hacer la peticion a este endpoint
+                </p>
+              ) : (
+                <p className="screen-text">Aqui puedes agregar tu contenido de tablas.</p>
+              )}
               <button
                 type="button"
                 className="ghost"
@@ -155,14 +265,23 @@ function App() {
           {screen === 'localidades' && (
             <>
               <h1>Localidades</h1>
-              <p className="screen-text">
-                Aqui puedes agregar tu contenido de localidades.
-              </p>
-              <button
-                type="button"
-                className="ghost"
-                onClick={() => setScreen('home')}
-              >
+              {loadingLocalidades ? (
+                <p>Cargando localidades...</p>
+              ) : localidadesError ? (
+                <p className="error">{localidadesError}</p>
+              ) : (
+                <ul>
+                  {localidades.length === 0 && <li>No hay localidades</li>}
+                  {localidades.map((l, idx) => (
+                    <li key={idx}>
+                      <strong>{l.AbreviacionCiudad ?? l.abreviacionCiudad ?? ''}</strong>
+                      : {l.NombreCompleto ?? l.nombreCompleto ?? ''}
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+              <button type="button" className="ghost" onClick={() => setScreen('home')}>
                 Volver a Home
               </button>
             </>

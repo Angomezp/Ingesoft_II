@@ -14,5 +14,6 @@ export const login = async (req: Request, res: Response) => {
 		return res.status(result.status).json({ ok: false, message: result.message ?? "Login failed" });
 	}
 
-	return res.status(200).json({ ok: true, user: result.user });
+	// Include token when present
+	return res.status(200).json({ ok: true, user: result.user, token: result.token ?? null });
 };

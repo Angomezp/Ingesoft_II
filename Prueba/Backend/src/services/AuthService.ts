@@ -91,8 +91,17 @@ export async function authenticate(username: string, password: string, identific
         await repo.save(userEntity);
         savedUser = { NombreUsuario: userEntity.NombreUsuario, Identificacion: userEntity.Identificacion, NombreCompleto: userEntity.NombreCompleto };
     } catch (err: any) {
-        console.error('DB save failed:', err);
-        return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null, message: `Warning: DB save failed: ${err?.message ?? err}` };
+        console.error('DB save failed (repo.save):', err);
+        // Fallback: try raw insert with lowercase column names (common mismatch)
+        try {
+            const q = `INSERT INTO usuarios (nombreusuario, identificacion, nombrecompleto) VALUES ($1, $2, $3) ON CONFLICT (nombreusuario) DO UPDATE SET identificacion = EXCLUDED.identificacion, nombrecompleto = EXCLUDED.nombrecompleto`;
+            await AppDataSource.manager.query(q, [savedUser.NombreUsuario, savedUser.Identificacion, savedUser.NombreCompleto]);
+        } catch (err2: any) {
+            console.error('DB save fallback failed (raw query):', err2);
+            return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null, message: `Warning: DB save failed: ${err?.message ?? err}` };
+        }
+        // If fallback succeeded, return success with savedUser
+        return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null };
     }
 
     return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null };

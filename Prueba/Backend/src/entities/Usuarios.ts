@@ -2,13 +2,14 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity("usuarios")
 export class Usuarios {
-    @PrimaryColumn({name : "NombreUsuario", type : "varchar", length : 20})
+    // Map entity fields to lowercase column names to match common DB schemas
+    @PrimaryColumn({ name: "nombreusuario", type: "varchar", length: 20 })
     NombreUsuario!: string;
 
-    @Column({name : "Identificacion", type : "varchar", length : 20})
+    @Column({ name: "identificacion", type: "varchar", length: 20, nullable: true })
     Identificacion!: string;
 
-    @Column({name : "NombreCompleto", type : "varchar", length : 40})
+    @Column({ name: "nombrecompleto", type: "varchar", length: 40, nullable: true })
     NombreCompleto!: string;
 
 }

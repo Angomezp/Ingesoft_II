@@ -1,6 +1,6 @@
 import request from 'supertest';
-import app from '../src/app';
-import { AppDataSource } from '../src/database/data-source';
+import app from '../app.ts';
+import { AppDataSource } from '../database/data-source.ts';
 
 function fail(msg: string): never {
   console.error('TEST FAILED:', msg);

@@ -79,13 +79,13 @@ function App() {
           throw new Error(txt || `Status ${resp.status}`)
         }
         const data = await resp.json()
-        // normalize: if response is object with array inside, try to find array
+        // Normalizar: si viene objeto con array dentro, buscar el array
         let items: any[] = []
         if (Array.isArray(data)) items = data
         else if (Array.isArray(data?.data)) items = data.data
         else if (Array.isArray(data?.result)) items = data.result
         else if (data && typeof data === 'object') {
-          // try to find first array property
+          // intentar encontrar la primera propiedad que sea array
           const arr = Object.values(data).find((v) => Array.isArray(v)) as any
           if (Array.isArray(arr)) items = arr
         }
@@ -126,14 +126,14 @@ function App() {
         return
       }
 
-      // expected: { ok: true, user: { NombreUsuario, Identificacion, NombreCompleto, TokenJWT? }, TokenJWT? }
+      // esperado: { ok: true, user: { NombreUsuario, Identificacion, NombreCompleto, TokenJWT? }, TokenJWT? }
       const user = data.user
       if (!user) {
         setError('Respuesta invalida del servidor')
         return
       }
 
-      // token may be on root or inside user; normalize
+      // token puede estar en raíz o en user; normalizar
       const tokenFromResp = data?.TokenJWT ?? user?.TokenJWT ?? data?.token ?? null
       setToken(tokenFromResp ?? null)
 

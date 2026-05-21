@@ -1,6 +1,5 @@
 import { env } from "./../config/env.ts";
-import { AppDataSource } from "../database/data-source.ts";
-import { Usuarios } from "../entities/Usuarios.ts";
+import { AuthRepository } from "../repositories/AuthRepository.ts";
 
 function base64(s: string | undefined) {
     return s ? Buffer.from(s).toString("base64") : "";
@@ -59,17 +58,12 @@ export async function authenticate(username: string, password: string, identific
         return { ok: false, status: 500, message: "Invalid JSON from auth endpoint" };
     }
 
-    // Strict validation: expect an object shaped like the example
+    // Validación estricta: esperar un objeto con la forma esperada
     if (typeof data !== "object" || data === null) {
         return { ok: false, status: 500, message: "Unexpected auth response shape" };
     }
 
-    // Require MensajeResultado === 0
-    if (!Object.prototype.hasOwnProperty.call(data, "MensajeResultado") || Number(data.MensajeResultado) !== 0) {
-        return { ok: false, status: 401, message: `Authentication failed (MensajeResultado=${data.MensajeResultado})` };
-    }
-
-    // Require Usuario field (string)
+    // Requerir campo Usuario (string)
     if (!Object.prototype.hasOwnProperty.call(data, "Usuario") || typeof data.Usuario !== "string" || data.Usuario.trim() === "") {
         return { ok: false, status: 500, message: "Auth response missing required Usuario field" };
     }
@@ -79,29 +73,15 @@ export async function authenticate(username: string, password: string, identific
     const NombreResp = data.Nombre ?? "";
     const TokenResp = Object.prototype.hasOwnProperty.call(data, 'TokenJWT') ? (data.TokenJWT ?? null) : null;
 
-    // Save to DB (insert or update)
-    // Save to DB (insert or update). If DB save fails, still return success to frontend but include a warning.
+    // Guardar en BD vía repositorio (insert/actualiza). Si falla, devolver éxito con aviso.
+    const repo = new AuthRepository();
     let savedUser = { NombreUsuario: String(UsuarioResp), Identificacion: String(IdentificacionResp), NombreCompleto: String(NombreResp) };
     try {
-        if (!AppDataSource.isInitialized) {
-            await AppDataSource.initialize();
-        }
-        const repo = AppDataSource.getRepository(Usuarios);
-        const userEntity = repo.create({ NombreUsuario: savedUser.NombreUsuario, Identificacion: savedUser.Identificacion, NombreCompleto: savedUser.NombreCompleto });
-        await repo.save(userEntity);
-        savedUser = { NombreUsuario: userEntity.NombreUsuario, Identificacion: userEntity.Identificacion, NombreCompleto: userEntity.NombreCompleto };
+        const u = await repo.saveOrUpdate(savedUser as any);
+        savedUser = { NombreUsuario: u.NombreUsuario, Identificacion: u.Identificacion, NombreCompleto: u.NombreCompleto };
     } catch (err: any) {
-        console.error('DB save failed (repo.save):', err);
-        // Fallback: try raw insert with lowercase column names (common mismatch)
-        try {
-            const q = `INSERT INTO usuarios (nombreusuario, identificacion, nombrecompleto) VALUES ($1, $2, $3) ON CONFLICT (nombreusuario) DO UPDATE SET identificacion = EXCLUDED.identificacion, nombrecompleto = EXCLUDED.nombrecompleto`;
-            await AppDataSource.manager.query(q, [savedUser.NombreUsuario, savedUser.Identificacion, savedUser.NombreCompleto]);
-        } catch (err2: any) {
-            console.error('DB save fallback failed (raw query):', err2);
-            return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null, message: `Warning: DB save failed: ${err?.message ?? err}` };
-        }
-        // If fallback succeeded, return success with savedUser
-        return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null };
+        console.error('DB save failed (AuthRepository.saveOrUpdate):', err);
+        return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null, message: `Warning: DB save failed: ${err?.message ?? err}` };
     }
 
     return { ok: true, status: 200, user: savedUser, token: TokenResp ?? null };

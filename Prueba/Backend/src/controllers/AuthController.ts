@@ -10,10 +10,10 @@ export const login = async (req: Request, res: Response) => {
 	const result = await authenticate(username, password, identificacion);
 
 	if (!result.ok) {
-		// notify front-end that login failed
+		// Informar al front-end que falló el login
 		return res.status(result.status).json({ ok: false, message: result.message ?? "Login failed" });
 	}
 
-	// Include token when present
+	// Incluir token si está presente
 	return res.status(200).json({ ok: true, user: result.user, token: result.token ?? null });
 };

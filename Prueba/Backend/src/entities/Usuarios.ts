@@ -2,7 +2,7 @@ import { Entity, Column, PrimaryColumn } from "typeorm";
 
 @Entity("usuarios")
 export class Usuarios {
-    // Map entity fields to lowercase column names to match common DB schemas
+    // Mapear campos a nombres de columna en minúsculas (coincidir BD)
     @PrimaryColumn({ name: "nombreusuario", type: "varchar", length: 20 })
     NombreUsuario!: string;
 

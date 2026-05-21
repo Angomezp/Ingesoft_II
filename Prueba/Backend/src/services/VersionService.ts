@@ -94,11 +94,11 @@ export async function getVersionStatus(): Promise<VersionStatus> {
             }
 
             console.log(`Saved VERSION=${endpointVersion} to ${envPath}`);
-            // use the saved version as localVersion for comparison
+            // Guardar versión local para comparar
             localVersion = endpointVersion;
         } catch (err) {
             console.error('Failed to write .env VERSION:', err);
-            // fall through and continue without local version
+            // Continuar sin versión local si falla escritura
         }
     }
 

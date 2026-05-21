@@ -1,7 +1,7 @@
 import { DataSource } from "typeorm";
 import { AppDataSource } from "./data-source.ts";
 
-// Connect to the database using the AppDataSource configuration as Singleton Pattern
+// Conectar a la BD usando AppDataSource (patrón singleton)
 
 class DatabaseConnection {
     private static instance: DataSource | null = null;
